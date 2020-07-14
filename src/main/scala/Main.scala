@@ -19,7 +19,7 @@ object Main extends App {
   var file: String = "/home/deshbandhu/MCIT_BigData/XMLtoCSV/resource/data/ExchangeRateArea/1248393.xml"
 
 
-  val countyPlace_schema =  StructType(
+  val countyPlace_schema = StructType(
     List(
       StructField("ns2:referenceTypeName",StringType,nullable = true),
       StructField("ns2:referenceTypeCode",StringType,true),
