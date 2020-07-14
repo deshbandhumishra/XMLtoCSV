@@ -2,19 +2,6 @@ import com.databricks.spark.xml._
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
-
-
-case class countyPlace(ns2referenceTypeName: String, ns2referenceTypeCode :String, ns2resourceIdentifier: String )
-case class ExchangeRateArea(ns3objectIdentifier:String,
-                            ns3lastModified:String,
-                            ns3lastModifiedBy:String,
-                            ns3deleted:String,
-                            ns3objectCreationDateTime:String,
-                            ns2countyPlace:countyPlace,
-                            ns2zipCode:String,
-                            ns2statePostalCode:String
-                           )
-
 object Main extends App {
   var file: String = "/home/deshbandhu/MCIT_BigData/XMLtoCSV/resource/data/ExchangeRateArea/1248393.xml"
 
@@ -25,11 +12,6 @@ object Main extends App {
       StructField("ns2:referenceTypeCode",StringType,true),
       StructField("ns2:resourceIdentifier",StringType,true)
     ))
-  /*
-   .add("ns2:referenceTypeName", StringType)
-   .add("ns2:referenceTypeCode", StringType)
-   .add("ns2:resourceIdentifier", StringType)
-*/
   val usedZipCountyStatePlace_schema = new StructType()
     .add("ns3:objectIdentifier", StringType)
     .add("ns3:lastModified", StringType)
@@ -51,10 +33,6 @@ object Main extends App {
     .add("exchangeRateAreaStartDate", StringType)
     .add("exchangeRateAreaEndDate", StringType)
     .add("constrainingInsuranceMarketLevelType", StringType)
-
-
-
-  //=====================================================
 
 
   val spark: SparkSession = SparkSession.builder().master("local[*]").appName("XMLtoCSV").getOrCreate()
@@ -88,16 +66,5 @@ object Main extends App {
     $"ns2:statePostalCode".as("ns2statePostalCode"))
 
 val finaltable = exchangeRateArea_df_final.crossJoin(usedZipCountyStatePlace_df_final)//.show(100)
-
-
-  //exchangeRateArea_df_final.show()
-  //usedZipCountyStatePlace_df_final.show()
-
-  //exchangeRateArea_df_final.printSchema()
-  //usedZipCountyStatePlace_df_final.printSchema()
-  /*
-    val list = df1.select($"ns2countyPlace").collectAsList()
-    list.forEach(x=>x.get(0))*/
   finaltable.write.format("csv").option("header","True").mode("overwrite").option("sep",",").save("/home/deshbandhu/MCIT_BigData/XMLtoCSV/resource/out1/")
-  //usedZipCountyStatePlace_df_final.write.format("csv").option("header","True").mode("overwrite").option("sep",",").save("/home/deshbandhu/MCIT_BigData/XMLtoCSV/resource/out2/")
 }
